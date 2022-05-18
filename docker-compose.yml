@@ -1,0 +1,34 @@
+version: "3.3"
+   
+services:
+  db:
+    image: mariadb
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MARIADB_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=maria
+      - MYSQL_USER=maria
+      - MYSQL_PASSWORD=maria
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=maria
+      - DB_USER=maria
+      - DB_PASSWORD=maria
+    depends_on:
+      - db
+  phpadmin:
+    image: phpmyadmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+
+
